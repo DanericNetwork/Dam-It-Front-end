@@ -21,7 +21,7 @@
     width: 100%;
     flex-direction: row;
     display: flex;
-    padding-inline: 30%;
+    justify-content: center;
     }
 .column {
     flex: 50%;
