@@ -2,7 +2,7 @@ export default defineNuxtConfig({
    pages: true,
    app: {
       head: {
-         title: 'Checker game',
+         title: 'Dam It',
          meta: [
             { charset: 'utf-8' },
             {
