@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { io } from "socket.io-client";
+import socketioService from "./services/socketio.service";
 
 export default {
   name: 'App',
@@ -13,11 +13,7 @@ export default {
     }
   },
   created() {
-    io("http://localhost:3000", {
-        auth: {
-            token: "test"
-        }
-    });
+    socketioService.socket
   },
 }
 </script>
