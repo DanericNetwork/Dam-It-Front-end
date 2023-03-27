@@ -10,11 +10,13 @@ export class SocketioService {
 
     private setupSocketConnection(): Socket {
         const userId = sessionStorage.getItem('userId') || uuidv4() && sessionStorage.setItem('userId', uuidv4());
-        return io('http://localhost:3000', {
+        const socket = io('http://localhost:3000', {
             auth: {
                 userId: sessionStorage.getItem('userId') || userId
             }
         });
+
+        return socket;
     }
 
     /**
