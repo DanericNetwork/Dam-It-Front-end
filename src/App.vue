@@ -92,10 +92,6 @@ socket.emit("recover-room")
     resetRoom();
   });
 
-  socket.on("roomNotFound", () => {
-    resetRoom();
-  });
-
   socket.on("logs", (data) => {
     updateLogs(data);
   });
