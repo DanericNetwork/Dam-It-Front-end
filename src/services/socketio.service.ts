@@ -1,6 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useRoom } from "../composables/useRoom";
+import { useUser } from "../composables/useUser";
+
+const { user, setUserId } = useUser();
 
 export class SocketioService {
   private _socket: Socket;
@@ -10,12 +13,15 @@ export class SocketioService {
   }
 
   private setupSocketConnection(): Socket {
-    const userId =
-      sessionStorage.getItem("userId") ||
-      (uuidv4() && sessionStorage.setItem("userId", uuidv4()));
+    let userId = user.value.userId;
+    if(!userId) {
+      setUserId(uuidv4());
+      userId = user.value.userId;
+    }
+      
     const socket = io("http://localhost:3000", {
       auth: {
-        userId: sessionStorage.getItem("userId") || userId,
+        userId: userId,
       },
     });
 

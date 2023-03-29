@@ -6,11 +6,18 @@
       <button @click="joinRoom(pin)">join</button>
       <p v-if="room.gamepin">Current gamepin: {{ room.gamepin }}</p>
       <button @click="leaveRoom">leave</button>
-      
     </div>
-      <div class="chat">
-        <p v-for="log in room.logs" :key="log.timestamp">{{ new Date(log.timestamp).toLocaleTimeString() + " " + log.player + " " + log.action }}</p>
-  </div>
+    <div class="chat">
+      <p v-for="log in room.logs" :key="log.timestamp">
+        {{
+          new Date(log.timestamp).toLocaleTimeString() +
+          " " +
+          log.player +
+          " " +
+          log.action
+        }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -28,7 +35,7 @@
   justify-content: space-between;
 }
 
-.chat { 
+.chat {
   /* Chat box where all messages come in */
   display: flex;
   flex-direction: column;
@@ -61,8 +68,6 @@ import socketioService from "./services/socketio.service";
 import { useRoom } from "./composables/useRoom";
 
 const { room, setGamepin, resetRoom, updateLogs } = useRoom();
-
-
 const socket = socketioService.socket;
 
 export default {
@@ -73,32 +78,40 @@ export default {
     };
   },
   setup() {
-socket.emit("recover-room")
-
     socket.on("connect", () => {
-    console.log("connected");
-  });
+      console.log("connected");
+      socket.emit("recover-room");
+    });
 
-  socket.on("disconnect", () => {
-    console.log("disconnected");
-  });
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
 
-  socket.on("roomJoined", (pin) => {
-    console.log("roomJoined", pin);
-    setGamepin(pin);
-  });
+    socket.on("roomJoined", (pin) => {
+      console.log("roomJoined", pin);
+      setGamepin(pin);
+    });
 
-  socket.on("roomLeft", (data) => {
-    resetRoom();
-  });
+    socket.on("roomRecovered", (pin) => {
+      setGamepin(pin);
+    });
 
-  socket.on("logs", (data) => {
-    updateLogs(data);
-  });
+    socket.on("noRoomRecovered", () => {
+      console.log("noRoomRecovered");
+      resetRoom();
+    });
 
-  socket.on("error", (data) => {
-    console.log(data);
-  });
+    socket.on("roomLeft", (data) => {
+      resetRoom();
+    });
+
+    socket.on("logs", (data) => {
+      updateLogs(data);
+    });
+
+    socket.on("error", (data) => {
+      console.log(data);
+    });
     return { room, setGamepin, resetRoom, updateLogs };
   },
   methods: {
@@ -110,7 +123,7 @@ socket.emit("recover-room")
     },
     joinRoom(pin: string) {
       socket.emit("join-room", pin);
-    }
+    },
   },
 };
 </script>
