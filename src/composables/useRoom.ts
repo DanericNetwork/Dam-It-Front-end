@@ -3,11 +3,13 @@ import { ref, watch } from "vue";
 interface Room {
   gamepin: string;
   logs: any[];
+  chats: any[];
 }
 
 class RoomClass implements Room {
   gamepin = "";
   logs = [];
+  chats = [];
 }
 
 export function useRoom() {
@@ -30,6 +32,10 @@ export function useRoom() {
     room.value.logs = data;
   };
 
+  const updateChats = (data: any) => {
+    room.value.chats = data;
+  };
+
   const resetRoom = () => {
     room.value = new RoomClass();
   };
@@ -39,5 +45,5 @@ export function useRoom() {
     room.value = JSON.parse(savedRoom);
   }
 
-  return { room, setGamepin, updateLogs, resetRoom };
+  return { room, setGamepin, updateLogs, resetRoom, updateChats };
 }

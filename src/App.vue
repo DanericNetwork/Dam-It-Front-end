@@ -3,20 +3,16 @@
     <div class="header">
       <button @click="createRoom">create</button>
       <input type="text" v-model="pin" />
-      <button @click="joinRoom(pin)">join</button>
+      <button @click="joinRoom()">join</button>
       <p v-if="room.gamepin">Current gamepin: {{ room.gamepin }}</p>
       <button @click="leaveRoom">leave</button>
     </div>
     <div class="chat">
-      <p v-for="log in room.logs" :key="log.timestamp">
-        {{
-          new Date(log.timestamp).toLocaleTimeString() +
-          " " +
-          log.player +
-          " " +
-          log.action
-        }}
-      </p>
+      <p v-for="chat in room.chats" :key="chat.userId">{{ chat.message }}</p>
+      <div>
+   <input type="text" v-model="message">
+   <button @click="sendMessage">send</button>
+      </div>
     </div>
   </div>
 </template>
@@ -67,7 +63,7 @@
 import socketioService from "./services/socketio.service";
 import { useRoom } from "./composables/useRoom";
 
-const { room, setGamepin, resetRoom, updateLogs } = useRoom();
+const { room, setGamepin, resetRoom, updateLogs, updateChats } = useRoom();
 const socket = socketioService.socket;
 
 export default {
@@ -75,6 +71,7 @@ export default {
   data() {
     return {
       pin: "",
+      message: "",
     };
   },
   setup() {
@@ -109,6 +106,12 @@ export default {
       updateLogs(data);
     });
 
+    socket.on("messages", (data) => {
+      updateChats(data);
+    
+      console.log(data);
+    });
+
     socket.on("error", (data) => {
       console.log(data);
     });
@@ -121,8 +124,14 @@ export default {
     leaveRoom() {
       socket.emit("leave-room");
     },
-    joinRoom(pin: string) {
-      socket.emit("join-room", pin);
+    joinRoom() {
+      socket.emit("join-room", this.pin);
+    },
+    sendMessage() {
+      socket.emit("send-chat", this.message);
+      this.message = "";
+      console.log(this.message);
+  
     },
   },
 };
