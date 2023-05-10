@@ -13,15 +13,6 @@ class RoomClass implements Room {
 export function useRoom() {
   const room = ref<Room>(new RoomClass());
 
-
-  watch(
-    room,
-    () => {
-      sessionStorage.setItem("room", JSON.stringify(room.value));
-    },
-    { deep: true }
-  );
-
   const setGamepin = (pin: string) => {
     room.value.gamepin = pin;
   };
