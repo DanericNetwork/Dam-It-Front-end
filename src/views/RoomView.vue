@@ -1,88 +1,48 @@
 <template>
-    <div class="container">
-      <div class="header">
-        <button @click="createRoom">create</button>
-        <input type="text" v-model="pin" />
-        <button @click="joinRoom(pin)">join</button>
-        <p v-if="room.gamepin">Current gamepin: {{ room.gamepin }}</p>
-        <p v-if="session.user?.username">Current player: {{ session.user?.username }}</p>
-        <button @click="leaveRoom">leave</button>
+  <div v-if="room.gamepin">
+      <div class="board-container">
+          <checkers-board :board={} />
       </div>
-      <div class="chat">
-        <p v-for="log in room.logs" :key="log.timestamp">
-          {{
-            new Date(log.timestamp).toLocaleTimeString() +
-            " " +
-            log.player +
-            " " +
-            log.action
-          }}
-        </p>
+      <div class="side-container">
+          <chat />
+          <logs />
       </div>
-    </div>
-  </template>
-  
-  <style>
-  .room {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-  
-  .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .chat {
-    /* Chat box where all messages come in */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-    height: 80vh;
-    width: 100%;
-    background-color: #f1f1f1;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    box-sizing: border-box;
-    overflow-y: scroll;
-  }
-  .input {
-    /* Input field for messages */
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: none;
-  }
-  </style>
-  
-  <script lang="ts">
-  import { socketServer } from "../composables/useSocket";
+  </div>
+  <div v-if="!room.gamepin">
+      <button @click="createRoom">Create Room</button>
+      <button @click="joinRoom('9518')">Join Room</button>
+  </div>
+</template>
+
+<script lang="ts">
+import CheckersBoard from "../components/CheckersBoard.vue";
+import Logs from "../components/Logs.vue";
+import Chat from "../components/Chat.vue";
+import { socketServer } from "../composables/useSocket";
   import { useRoom } from "../composables/useRoom";
   import { useSession } from "../composables/useSession";
 
   const { session } = useSession();
   
-  const { room } = useRoom();
+  const { room, setGamepin } = useRoom();
+export default {
   
-  export default {
-    name: "Room",
-    data() {
-      return {
-        pin: "",
-      };
-    },
-    setup() {
+  name: "RoomView",
+  components: {
+      CheckersBoard,
+      Logs,
+      Chat,
+  },
+  setup() {
+      socketServer.emit("recover-room");
       socketServer.on("roomCreated", (pin: string) => {
         console.log("roomCreated", pin);
+      });
+      socketServer.on("roomJoined", (pin: string) => {
+        setGamepin(pin);
+      });
+      socketServer.on("roomRecovered", (pin: string) => {
+        setGamepin(pin);
       });
       return { room, socketServer, session };
     },
@@ -96,7 +56,27 @@
       joinRoom(pin: string) {
         socketServer.emit("join-room", pin);
       },
-    },
-  };
-  </script>
+}
+};
+</script>
+
+<style>
+body {
+  margin: 0;
+  padding: 30px;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+.board-container {
+  width: 60%;
+}
+.side-container {
+  width: 40%;
+}
+</style>
+  
   
