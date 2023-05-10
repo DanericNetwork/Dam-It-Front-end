@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
+    "@types/socket.io-client": "^3.0.0",
     "dotenv": "^16.0.3",
     "socket.io-client": "^4.6.1",
     "uuid": "^9.0.0",
