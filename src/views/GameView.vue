@@ -27,6 +27,7 @@ export default {
 <style>
 body {
     margin: 0;
+    padding: 30px;
 }
 .container {
     display: flex;
