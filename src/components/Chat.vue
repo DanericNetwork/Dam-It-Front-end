@@ -45,7 +45,7 @@
   
       const sendMessage = (): void => {
         if (newMessage.value.trim() !== '') {
-          socketServer.emit('send-chat', JSON.stringify(newMessage.value));
+          socketServer.emit('send-chat', newMessage.value);
           newMessage.value = '';
         }
       };

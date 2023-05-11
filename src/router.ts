@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { socketServer } from "./composables/useSocket";
 import { useSession } from "./composables/useSession";
 
-const router = createRouter({
+export  const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
@@ -18,11 +18,19 @@ const router = createRouter({
   ],
 });
 
-const { clearSession, session } = useSession();
+const { session, sessionLoaded } = useSession();
 
 export async function CheckAuth(): Promise<boolean> {
+  await new Promise((resolve) => {
+    const checkSessionLoaded = setInterval(() => {
+      if (sessionLoaded.value) {
+        clearInterval(checkSessionLoaded);
+        return true;
+      }
+    }, 100);
+  });
+
   socketServer.emit("check-auth", session.value.id);
-  console.log(session.value.id);
   return new Promise((resolve) => {
     socketServer.on("auth", (response: boolean) => {
       console.log(response);
@@ -32,19 +40,10 @@ export async function CheckAuth(): Promise<boolean> {
         resolve(true);
       } else {
         console.log("Not authenticated");
+        router.push("/login");
         session.value.resetSession();
         resolve(false);
       }
     });
   });
 }
-
-router.beforeResolve(async (to, from, next) => {
-  if (to.name !== "Login" && !(await CheckAuth())) {
-    next({ name: "Login" });
-  } else {
-    next();
-  }
-});
-
-export default router;

@@ -1,4 +1,4 @@
-import router from "../router";
+import {router} from "../router";
 import { ref, watch } from "vue";
 export interface User {
   id: string;
@@ -38,6 +38,7 @@ export function useSession() {
   const session = ref<SessionClass>(
     initialSession ? new SessionClass(initialSession.id, initialSession.user) : new SessionClass()
   );
+  const sessionLoaded = ref<boolean>(false);
 
   watch(
     session,
@@ -48,6 +49,7 @@ export function useSession() {
         await localStorage.setItem("session", JSON.stringify(session.value));
         router.push({ name: "Room" });
       }
+      sessionLoaded.value = true;
     },
     { deep: true }
   );
@@ -63,5 +65,5 @@ export function useSession() {
   const clearSession = () => {
     session.value.resetSession();
   }; 
-  return { session, setSessionUser, setSessionId, clearSession };
+  return { session, setSessionUser, setSessionId, clearSession, sessionLoaded };
 }

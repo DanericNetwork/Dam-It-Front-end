@@ -1,28 +1,41 @@
 <template>
     <div class="log-container">
-        <h1 class="log-title">Log</h1>
-        <div class="log-box">
-            <div class="log-message-box">
-                <p class="log-message"><strong>Martvdm</strong> - Moved <strong>B3</strong> to <strong>C4</strong></p>
-                <p class="log-message-time">20:23:12</p>
-            </div>
-            <div class="log-message-box">
-                <p class="log-message"><strong>Martvdm</strong> - Moved <strong>B3</strong> to <strong>C4</strong></p>
-                <p class="log-message-time">20:23:12</p>
-            </div>
-            <div class="log-message-box">
-                <p class="log-message"><strong>Martvdm</strong> - Moved <strong>B3</strong> to <strong>C4</strong></p>
-                <p class="log-message-time">20:23:12</p>
-            </div>
+      <h1 class="log-title">Log</h1>
+      <div class="log-box">
+        <div v-for="log in room.logs" :key="log.timestamp" class="log-message-box">
+          <p class="log-message">
+            <strong>{{ log.username }}</strong> - {{ log.action }}
+          </p>
+          <p class="log-message-time">{{ formatTimestamp(log.timestamp) }}</p>
         </div>
+      </div>
     </div>
-</template>
+  </template>
+  
+  <script lang="ts">
+  import { socketServer } from '../composables/useSocket';
+  import { useRoom } from '../composables/useRoom';
 
-<script lang="ts">
-export default {
-    name: "Logs",
-}
-</script>
+  
+  const { room, updateLogs } = useRoom();
+  
+  export default {
+    name: 'Logs',
+    setup() {
+      const formatTimestamp = (timestamp: string) => {
+        const date = new Date(timestamp);
+        return `${(date.getHours())}:${(date.getMinutes())}:${(date.getSeconds())}`;
+      }
+  
+      socketServer.on('logs', (data: any) => {
+        updateLogs(data);
+      });
+  
+      return { room, formatTimestamp };
+    }
+  };
+  </script>
+  
 
 <style>
 .log-container {
