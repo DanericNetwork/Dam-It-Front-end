@@ -47,13 +47,14 @@
     border-radius: 25px;
     padding: 10px;
     margin-top: 30px;
+    border: 2px solid #ed135d;
 }
 
 .log-title {
     font-family: 'Roboto', sans-serif;
     font-size: 30px;
     font-weight: bold;
-    color: #000000;
+    color: #ed135d;
     margin: 10px 0 20px 0;
     padding: 0;
 }
