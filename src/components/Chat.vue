@@ -33,13 +33,14 @@ export default {
     background-color: #D9D9D9;
     border-radius: 25px;
     padding: 10px;
+    border: 2px solid #ed135d;
 }
 
 .chat-title {
     font-family: 'Roboto', sans-serif;
     font-size: 30px;
     font-weight: bold;
-    color: #000000;
+    color: #ed135d;
     margin: 10px 0 20px 0;
     padding: 0;
 }
@@ -61,7 +62,7 @@ export default {
     font-family: 'Roboto', sans-serif;
     font-size: 15px;
     font-weight: normal;
-    color: #000000;
+    color: #000;
     margin: 0;
     padding: 0;
     width: 100%;
