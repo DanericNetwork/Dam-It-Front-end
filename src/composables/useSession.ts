@@ -1,3 +1,4 @@
+import router from "../router";
 import { ref, watch } from "vue";
 export interface User {
   id: string;
@@ -40,11 +41,12 @@ export function useSession() {
 
   watch(
     session,
-    () => {
+    async () => {
       if (session.value.id === "") {
         localStorage.removeItem("session");
       } else {
-        localStorage.setItem("session", JSON.stringify(session.value));
+        await localStorage.setItem("session", JSON.stringify(session.value));
+        router.push({ name: "Room" });
       }
     },
     { deep: true }

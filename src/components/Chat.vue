@@ -35,7 +35,7 @@
     },
     setup() {
       const { session } = useSession();
-      const { room, setGamepin, resetRoom, updateLogs, updateChats } = useRoom();
+      const { room, updateChats } = useRoom();
       const newMessage = ref('');
   
       const formatTime = (timestamp: number): string => {

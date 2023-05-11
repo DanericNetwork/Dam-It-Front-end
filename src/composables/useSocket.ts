@@ -4,7 +4,13 @@ export class SocketConnection {
   public socket: Socket;
 
   constructor() {
-    this.socket = io("http://localhost:3000");
+    this.socket = io("http://localhost:3000", {
+      auth: {
+        sessionId: localStorage.getItem("session"),
+      },
+    });
+
+
     this.socket.on("connect", () => {
       console.log("connected");
     });
