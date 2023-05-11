@@ -1,7 +1,7 @@
 <template>
-  <div v-if="room.gamepin">
+  <div class="container" v-if="room.gamepin">
       <div class="board-container">
-          <checkers-board :board={} />
+          <checkers-board :gamepin="room.gamepin" :username="session.user?.username" />
       </div>
       <div class="side-container">
           <chat />
@@ -66,10 +66,10 @@ body {
   padding: 30px;
 }
 .container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
 }
 .board-container {
   width: 60%;

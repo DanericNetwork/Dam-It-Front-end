@@ -3,7 +3,7 @@
       <h1 class="chat-title">Chat</h1>
       <div class="chat-box">
         <div class="chat-message-box" v-for="(message, index) in room.chats" :key="index">
-          <p class="chat-message">{{ message.username === session.user.username ? 'You' : message.username }}: {{ message.message }}</p>
+          <p class="chat-message">{{ message.username === session.user?.username ? 'You' : message.username }}: {{ message.message }}</p>
           <p class="chat-message-time">{{ formatTime(message.timestamp) }}</p>
         </div>
       </div>
@@ -76,6 +76,7 @@
     background-color: #d9d9d9;
     border-radius: 25px;
     padding: 10px;
+    border: 2px solid #ed135d;
   }
   
   .chat-title {

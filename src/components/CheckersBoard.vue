@@ -1,8 +1,8 @@
 <template>
   <div class="checkerboard-container">
     <div class="checkerboard-header">
-      <h1>Martvdm</h1>
-      <h2>Game Pin: 000000</h2>
+      <h1>{{username}}</h1>
+      <h2>Game Pin: {{gamepin}}</h2>
     </div>
     <div class="checkerboard">
       <div v-for="row in rows" :key="row">
@@ -17,6 +17,16 @@
 <script>
 export default {
   name: "CheckersBoard",
+  props: {
+    username: {
+      type: String,
+      required: true,
+    },
+    gamepin: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       rows: 8,
